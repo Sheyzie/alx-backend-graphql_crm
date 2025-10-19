@@ -1,19 +1,17 @@
 import graphene
 from graphene_django import DjangoObjectType
+from graphene_django.filter import DjangoFilterConnectionField
 import re
 from datetime import datetime
+from crm.filters import CustomerFilter, ProductFilter, OrderFilter
 from .models import Customer, Product, Order
-
-class Query(graphene.ObjectType):
-    hello = graphene.String()
-
-    def resolve_name(self, info):
-        return "Hello, GraphQL!"
 
 
 class CustomerType(DjangoObjectType):
     class Meta:
         model = Customer
+        filterset_class = CustomerFilter
+        interfaces = (graphene.relay.Node,)
 
     name = graphene.String()
     email = graphene.String()
@@ -107,6 +105,8 @@ class BulkCreateCustomers(graphene.Mutation):
 class ProductType(DjangoObjectType):
     class Meta:
         model = Product
+        filterset_class = ProductFilter
+        interfaces = (graphene.relay.Node,)
     name = graphene.String()
     price = graphene.Decimal()
     stock = graphene.Int()  
@@ -136,6 +136,8 @@ class CreateProduct(graphene.Mutation):
 class OrderType(DjangoObjectType):
     class Meta:
         model = Order
+        filterset_class = OrderFilter
+        interfaces = (graphene.relay.Node,)
     customer = graphene.Field(CustomerType)
     product = graphene.List(ProductType)
     order_date = graphene.DateTime() 
@@ -195,3 +197,18 @@ class Mutation(graphene.ObjectType):
     bulk_create_customers = BulkCreateCustomers.Field()
     create_product = CreateProduct.Field()
     create_order = CreateOrder.Field()
+
+
+class Query(graphene.ObjectType):
+    hello = graphene.String()
+    customer = graphene.relay.Node.Field(CustomerType)
+    all_customers = DjangoFilterConnectionField(CustomerType)
+
+    product = graphene.relay.Node.Field(ProductType)
+    all_products = DjangoFilterConnectionField(ProductType)
+
+    order = graphene.relay.Node.Field(OrderType)
+    all_orders = DjangoFilterConnectionField(OrderType)
+
+    def resolve_name(self, info):
+        return "Hello, GraphQL!"
