@@ -1,4 +1,5 @@
 import graphene
+from graphene_django import DjangoObjectType
 import re
 from datetime import datetime
 from .models import Customer, Product, Order
@@ -10,7 +11,10 @@ class Query(graphene.ObjectType):
         return "Hello, GraphQL!"
 
 
-class CustomerType(graphene.ObjectType):
+class CustomerType(DjangoObjectType):
+    class Meta:
+        model = Customer
+
     name = graphene.String()
     email = graphene.String()
     phone = graphene.String()
@@ -100,7 +104,9 @@ class BulkCreateCustomers(graphene.Mutation):
         return BulkCreateCustomers(customers=successful_customers, success=success, message=message, failed=failed)
 
 
-class ProductType(graphene.ObjectType):
+class ProductType(DjangoObjectType):
+    class Meta:
+        model = Product
     name = graphene.String()
     price = graphene.Decimal()
     stock = graphene.Int()  
@@ -127,7 +133,9 @@ class CreateProduct(graphene.Mutation):
         return CreateProduct(product=product, success=success, message=message)
 
 
-class OrderType(graphene.ObjectType):
+class OrderType(DjangoObjectType):
+    class Meta:
+        model = Order
     customer = graphene.Field(CustomerType)
     product = graphene.List(ProductType)
     order_date = graphene.DateTime() 

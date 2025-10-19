@@ -2,8 +2,8 @@ from django.db import models
 
 
 class Customer(models.Model):
-    name = models.CharField(max_length=50)
-    email = models.CharField(max_length=100, unique=True)
+    name = models.CharField(max_length=100)
+    email = models.EmailField(max_length=100, unique=True)
     phone = models.CharField(max_length=50)
 
     def __str__(self):
@@ -11,8 +11,8 @@ class Customer(models.Model):
     
 
 class Product(models.Model):
-    name = models.CharField(max_length=50, null=False)
-    price = models.DecimalField(null=False)
+    name = models.CharField(max_length=100, null=False)
+    price = models.DecimalField(max_digits=9, decimal_places=2, null=False)
     stock = models.PositiveIntegerField(default=0)
 
 
