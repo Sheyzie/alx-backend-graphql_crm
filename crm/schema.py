@@ -6,6 +6,7 @@ from datetime import datetime
 from crm.filters import CustomerFilter, ProductFilter, OrderFilter
 from .models import Customer, Product, Order
 # from crm.models import Product
+from django.db.models import Sum
 
 
 class CustomerType(DjangoObjectType):
@@ -228,6 +229,9 @@ class Mutation(graphene.ObjectType):
 
 class Query(graphene.ObjectType):
     hello = graphene.String()
+    total_customers = graphene.Int()
+    total_orders = graphene.Int()
+    total_revenue = graphene.Float()
     customer = graphene.relay.Node.Field(CustomerType)
     all_customers = DjangoFilterConnectionField(CustomerType)
 
@@ -239,6 +243,16 @@ class Query(graphene.ObjectType):
 
     def resolve_name(self, info):
         return "Hello, GraphQL!"
+    
+    def resolve_total_customers(self, info):
+        return Customer.objects.count()
+
+    def resolve_total_orders(self, info):
+        return Order.objects.count()
+
+    def resolve_total_revenue(self, info):
+        result = Order.objects.aggregate(total=Sum("total_amount"))
+        return result["total"] or 0.0
 
 
 
