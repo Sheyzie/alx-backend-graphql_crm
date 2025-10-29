@@ -5,6 +5,7 @@ import re
 from datetime import datetime
 from crm.filters import CustomerFilter, ProductFilter, OrderFilter
 from .models import Customer, Product, Order
+# from crm.models import Product
 
 
 class CustomerType(DjangoObjectType):
