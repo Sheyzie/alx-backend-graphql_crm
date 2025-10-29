@@ -31,12 +31,11 @@ client = Client(transport=transport, fetch_schema_from_transport=True)
 result = client.execute(query, variable_values={"afterDate": seven_days_ago})
 print(result)
 
-orders = result.orders
+orders = result["orders"]
 
-for order in orders:
-
-    with open(path, "a") as f:
-        f.write(f"{timestamp} [ORDER]- {order.id} by {order.customer.id}\n")
+with open(path, "a") as f:
+    for order in orders:
+        f.write(f"{timestamp} [ORDER]- {order['id']} by {order['customer']['id']}\n")
 
 print("Order reminders processed!")
 
