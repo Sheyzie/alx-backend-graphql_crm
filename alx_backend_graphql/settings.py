@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'graphene_django',
     'crm',
     'django_filters',
+    'django_crontab',
 ]
 
 MIDDLEWARE = [
@@ -135,3 +136,8 @@ REST_FRAMEWORK = {
 GRAPHENE = {
     "SCHEMA": "alx_backend_graphql.schema.schema",
 }
+
+# for django_crontab setup
+CRONJOBS = [
+    ('*/5 * * * *', 'crm.cron.log_crm_heartbeat'),
+]

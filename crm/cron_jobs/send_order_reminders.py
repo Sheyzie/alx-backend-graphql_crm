@@ -1,3 +1,5 @@
+# pip install gql[all]
+
 from datetime import timedelta
 from django.utils import timezone
 from gql import gql, Client
